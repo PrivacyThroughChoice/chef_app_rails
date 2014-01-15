@@ -8,81 +8,42 @@
 #
 
 include_recipe 'apt'
-include_recipe 'git'
+include_recipe 'ruby_build'
+include_recipe "runit"
 
-user "thunr-rails" do
+ruby_build_ruby '1.9.3-p448' do
+  prefix_path '/usr/local/'
+  environment 'CFLAGS' => '-g -O2'
+  action :install
+end
+
+gem_package 'bundler' do
+  version '1.5.0'
+  gem_binary '/usr/local/bin/gem'
+  options '--no-ri --no-rdoc'
+end
+
+thunr_user = "thunr-rails"
+
+user thunr_user do
   manage_home false
 end
 
-execute 'apt-key update' do
-  command 'apt-key update'
-  action :nothing
-end
-
-apt_repository 'brightbox' do
-  uri 'http://ppa.launchpad.net/brightbox/ruby-ng-experimental/ubuntu'
-  distribution node['lsb']['codename']
-  components ['main']
-  keyserver "keyserver.ubuntu.com"
-  key 'C3173AA6'
-  action :add
-  notifies :run, "execute[apt-key update]", :immediately
-end
-
-%w[ ruby2.0 ruby2.0-dev libsqlite3-dev ].each do |pkg|
-  package pkg
-end
-
-gem_package 'bundler'
-
-template '/etc/init.d/thunr-rails' do
-  source 'unicorn_init.erb'
-  owner 'root'
-  group 'root'
-  mode 0755
-  variables(
-    :app_name => 'thunr-rails',
-    :app_root => '/opt/thunr-rails/current',
-    :pid => '/opt/thunr-rails/shared/tmp/pids/unicorn.pid',
-    :timeout => 60,
-    :env => 'development',
-    :user => 'thunr-rails'
-  )
-end
-
-unicorn_config '/etc/unicorn/thunr-rails.rb' do
-  listen({ 9000 => {} })
-  preload_app true
-  working_directory '/opt/thunr-rails/current'
-  pid '/tmp/thurn-rails.sock'
-  worker_processes 1
-  worker_timeout 15
-end
-
-directory '/opt/thunr-rails/shared/tmp/pids' do
-  owner 'thunr-rails'
-  group 'thunr-rails'
-  mode 0755
-  recursive true
-end
-
-execute 'bundle install' do
-  command 'bundle install'
-  cwd '/opt/thunr-rails/current'
-  action :nothing
-  notifies :restart, 'service[thunr-rails]', :delayed
-end
-
 application 'thunr-rails' do
+  owner thunr_user
+  group thunr_user
   path '/opt/thunr-rails'
-  owner 'thunr-rails'
-  group 'thunr-rails'
-  repository 'https://github.com/thunr/thunr_app_railstest.git'
-  revision 'master'
-  #notifies :run, 'execute[bundle install]', :delayed
-end
-
-service 'thunr-rails' do
-  supports :status => true, :restart => true, :reload => true
-  action :enable
+  repository 'git://github.com/thunr/thunr_app_rails.git'
+  rails do
+    bundler true
+    database do
+      adapter 'sqlite3'
+      database 'db/thunr.db'
+      username 'thunr-rails'
+      password 'pleasechangeme'
+    end
+  end
+  unicorn do
+    worker_processes 2
+  end
 end
