@@ -10,6 +10,10 @@
 include_recipe 'apt'
 include_recipe 'git'
 
+user "thunr-rails" do
+  manage_home false
+end
+
 execute 'apt-key update' do
   command 'apt-key update'
   action :nothing
@@ -42,7 +46,7 @@ template '/etc/init.d/thunr-rails' do
     :pid => '/opt/thunr-rails/shared/tmp/pids/unicorn.pid',
     :timeout => 60,
     :env => 'development',
-    :user => 'vagrant'
+    :user => 'thunr-rails'
   )
 end
 
@@ -56,8 +60,8 @@ unicorn_config '/etc/unicorn/thunr-rails.rb' do
 end
 
 directory '/opt/thunr-rails/shared/tmp/pids' do
-  owner 'vagrant'
-  group 'vagrant'
+  owner 'thunr-rails'
+  group 'thunr-rails'
   mode 0755
   recursive true
 end
@@ -71,8 +75,8 @@ end
 
 application 'thunr-rails' do
   path '/opt/thunr-rails'
-  owner 'vagrant'
-  group 'vagrant'
+  owner 'thunr-rails'
+  group 'thunr-rails'
   repository 'https://github.com/thunr/thunr_app_railstest.git'
   revision 'master'
   #notifies :run, 'execute[bundle install]', :delayed
