@@ -37,10 +37,11 @@ application 'thunr-rails' do
   rails do
     bundler true
     database do
-      adapter 'sqlite3'
-      database 'db/thunr.db'
-      username 'thunr-rails'
-      password 'pleasechangeme'
+      adapter node['thunr-rails']['db']['adapter']
+      host node['thunr-rails']['db']['host']
+      database node['thunr-rails']['db']['database']
+      username node['thunr-rails']['db']['username']
+      password node['thunr-rails']['db']['password']
     end
   end
   unicorn do
