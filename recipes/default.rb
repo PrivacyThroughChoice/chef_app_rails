@@ -29,6 +29,12 @@ user thunr_user do
   manage_home false
 end
 
+db_adapter = node['thunr-rails']['db']['adapter']
+db_host = node['thunr-rails']['db']['host']
+db_database = node['thunr-rails']['db']['database']
+db_username = node['thunr-rails']['db']['username']
+db_password = node['thunr-rails']['db']['password']
+
 application 'thunr-rails' do
   owner thunr_user
   group thunr_user
@@ -37,11 +43,11 @@ application 'thunr-rails' do
   rails do
     bundler true
     database do
-      adapter node['thunr-rails']['db']['adapter']
-      host node['thunr-rails']['db']['host']
-      database node['thunr-rails']['db']['database']
-      username node['thunr-rails']['db']['username']
-      password node['thunr-rails']['db']['password']
+      adapter db_adapter
+      host db_host
+      database db_database
+      username db_username
+      password db_password
     end
   end
   unicorn do
