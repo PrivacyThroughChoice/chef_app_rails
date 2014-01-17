@@ -9,9 +9,16 @@ platforms:
     box: opscode-ubuntu-12.04
     box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box
 
+provisioner:
+  name: chef_solo
+  environments_path: ../../thunr_chef_repo/environments
+
 suites:
 - name: default
   run_list: ["recipe[thunr-rails]", "recipe[minitest-handler]"]
   attributes: {}
+  provisioner:
+    solo_rb:
+      environment: development
 settings:
   parallel: true

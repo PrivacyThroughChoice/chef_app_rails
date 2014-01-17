@@ -9,7 +9,8 @@
 
 include_recipe 'apt'
 include_recipe 'ruby_build'
-include_recipe "runit"
+include_recipe 'runit'
+include_recipe 'sensu_spec'
 
 ruby_build_ruby '1.9.3-p448' do
   prefix_path '/usr/local/'
