@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: thunr-rails
+# Cookbook Name:: ptc-rails
 # Recipe:: default
 #
 # Copyright (C) 2013 YOUR_NAME
@@ -23,23 +23,23 @@ gem_package 'bundler' do
   options '--no-ri --no-rdoc'
 end
 
-thunr_user = "thunr-rails"
+ptc_user = "ptc-rails"
 
-user thunr_user do
+user ptc_user do
   manage_home false
 end
 
-db_adapter = node['thunr-rails']['db']['adapter']
-db_host = node['thunr-rails']['db']['host']
-db_database = node['thunr-rails']['db']['database']
-db_username = node['thunr-rails']['db']['username']
-db_password = node['thunr-rails']['db']['password']
+db_adapter = node['ptc-rails']['db']['adapter']
+db_host = node['ptc-rails']['db']['host']
+db_database = node['ptc-rails']['db']['database']
+db_username = node['ptc-rails']['db']['username']
+db_password = node['ptc-rails']['db']['password']
 
-application 'thunr-rails' do
-  owner thunr_user
-  group thunr_user
-  path '/opt/thunr-rails'
-  repository 'git://github.com/thunr/thunr_app_rails.git'
+application 'ptc-rails' do
+  owner ptc_user
+  group ptc_user
+  path '/opt/ptc-rails'
+  repository 'git://github.com/ptc/ptc_app_rails.git'
   rails do
     bundler true
     database do

@@ -1,4 +1,4 @@
-# thunr-rails cookbook
+# rails cookbook
 
 # Requirements
 
