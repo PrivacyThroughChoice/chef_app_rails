@@ -11,7 +11,7 @@ platforms:
 
 suites:
 - name: default
-  run_list: ["recipe[thunr-rails]", "recipe[minitest-handler]"]
+  run_list: ["recipe[chef_app_rails]", "recipe[minitest-handler]"]
   attributes: {}
   provisioner:
     solo_rb:
