@@ -39,7 +39,7 @@ application 'ptc-rails' do
   owner ptc_user
   group ptc_user
   path '/opt/ptc-rails'
-  repository 'git://github.com/ptc/ptc_app_rails.git'
+  repository 'git://github.com/privacythroughchoice/app_rails.git'
   rails do
     bundler true
     database do
